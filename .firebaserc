@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "daycare-elc": {
+      "hosting": {
+        "elc-daycare": [
+          "daycare-elc"
+        ]
+      }
+    }
+  }
+}

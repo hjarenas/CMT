@@ -1,0 +1,9 @@
+.toolbar-filler{
+    flex: 1 1 auto;
+}
+
+.main-toolbar{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
