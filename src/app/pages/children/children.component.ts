@@ -26,7 +26,7 @@ export class ChildrenComponent implements OnInit {
   public clickEdit(kid: Child) {
     this.router.navigateByUrl('edit-child/' + kid.id);
   }
-  public clickRemove(kid: Child){
+  public clickRemove(kid: Child) {
     this.childrenService.Delete(kid.id);
   }
   public getAge(kid: Child): string {

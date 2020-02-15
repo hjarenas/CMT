@@ -45,7 +45,7 @@ export class ChildrenDetailComponent implements OnInit {
     }
   }
 
-  public saveChild(): void {
+  public async saveChild(): Promise<void> {
     if (this.childForm.invalid) {
       this.snackbarService.showError('The data is not valid', 'Dismiss');
       return;
@@ -57,7 +57,7 @@ export class ChildrenDetailComponent implements OnInit {
       dob: dobVal.toDate(),
       id: this.childId
     };
-    const saved = this.childId
+    const saved = await this.childId
       ? this.childrenService.Update(child)
       : this.childrenService.Add(child);
     if (saved) {

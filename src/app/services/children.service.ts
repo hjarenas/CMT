@@ -9,11 +9,12 @@ import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { Child } from 'src/app/models/child';
 import { SnackbarService } from './snackbar.service';
+import { CrudService } from './interfaces/crud-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChildrenService {
+export class ChildrenService implements CrudService<Child, string>{
   private childrenCollection: AngularFirestoreCollection<Child>;
   private children$: Observable<Child[]>;
   constructor(
