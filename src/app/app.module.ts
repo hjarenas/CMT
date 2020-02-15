@@ -10,9 +10,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -24,6 +26,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ChildrenComponent } from './pages/children/children.component';
 import { ChildrenDetailComponent } from './pages/children-detail/children-detail.component';
+import { ConfirmActionComponent } from './shared/components/confirm-action/confirm-action.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,8 @@ import { ChildrenDetailComponent } from './pages/children-detail/children-detail
     LoginComponent,
     DashboardComponent,
     ChildrenComponent,
-    ChildrenDetailComponent
+    ChildrenDetailComponent,
+    ConfirmActionComponent
   ],
   imports: [
     AppRoutingModule,
@@ -43,7 +47,9 @@ import { ChildrenDetailComponent } from './pages/children-detail/children-detail
     MatButtonModule,
     MatCardModule,
     MatDatepickerModule,
+    MatDialogModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatMomentDateModule,
     MatSnackBarModule,

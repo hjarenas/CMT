@@ -17,30 +17,29 @@ import { CrudService } from './interfaces/crud-service';
 export class ChildrenService implements CrudService<Child, string>{
   private childrenCollection: AngularFirestoreCollection<Child>;
   private children$: Observable<Child[]>;
+
   constructor(
     private db: AngularFirestore,
     private snackbarService: SnackbarService
-  ) { }
+  ) {
+    this.childrenCollection = this.db.collection<Child>('children', ref =>
+      ref.orderBy('lastName')
+    );
+    this.children$ = this.childrenCollection.valueChanges();
+  }
 
   public Get(id: string): Observable<Child> {
-    return this.children$.pipe(
-      map(list => {
-        let child = list.find(c => c.id === id);
-        child = this.pipeDate(child);
-        return child;
+    const childDoc = this.db.doc<Child>('children/' + id);
+    const child$ = childDoc.valueChanges();
+    return child$.pipe(
+      map(kid => {
+        return this.pipeDate(kid);
       })
     );
   }
 
   public List(): Observable<Child[]> {
-    this.childrenCollection = this.db.collection<Child>('children', ref =>
-      ref.orderBy('lastName')
-    );
-    this.children$ = this.childrenCollection.valueChanges();
     return this.children$.pipe(
-      tap(e => {
-        console.log('new length: ' + e.length);
-      }),
       map((value: Child[], index: number) => this.pipeDateList(value, index))
     );
   }

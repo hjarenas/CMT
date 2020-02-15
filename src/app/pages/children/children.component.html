@@ -9,9 +9,11 @@
             </mat-card-content>
             <mat-card-actions>
                 <button mat-button (click)="clickRemove(kid)" color="warn">Remove Child</button>
-                <button mat-button (click)="clickEdit(kid)">Edit Child</button>
+                <a mat-button routerLink="/edit-child/{{kid.id}}">Edit Child</a>
             </mat-card-actions>
         </mat-card>
     </div>
 </div>
-<button mat-button routerLink='/add-child'>Add Child</button>
+<a mat-fab routerLink='/add-child' class="add-button">
+    <mat-icon>add</mat-icon>
+</a>
