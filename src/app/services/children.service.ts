@@ -1,69 +1,54 @@
 import { Injectable } from '@angular/core';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection
-} from '@angular/fire/firestore';
 import 'firebase/firestore';
-import { firestore } from 'firebase';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
 import { Child } from 'src/app/models/child';
 import { SnackbarService } from './snackbar.service';
 import { CrudService } from './interfaces/crud-service';
+import { FirestoreService } from './firestore.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChildrenService implements CrudService<Child, string>{
-  private childrenCollection: AngularFirestoreCollection<Child>;
-  private children$: Observable<Child[]>;
-
+export class ChildrenService implements CrudService<Child, string> {
+  private readonly path = 'children';
   constructor(
+    private firestoreService: FirestoreService,
     private db: AngularFirestore,
     private snackbarService: SnackbarService
   ) {
-    this.childrenCollection = this.db.collection<Child>('children', ref =>
-      ref.orderBy('lastName')
-    );
-    this.children$ = this.childrenCollection.valueChanges();
-  }
-
-  public Get(id: string): Observable<Child> {
-    const childDoc = this.db.doc<Child>('children/' + id);
-    const child$ = childDoc.valueChanges();
-    return child$.pipe(
-      map(kid => {
-        return this.pipeDate(kid);
-      })
-    );
   }
 
   public List(): Observable<Child[]> {
-    return this.children$.pipe(
-      map((value: Child[], index: number) => this.pipeDateList(value, index))
-    );
+    return this.firestoreService.colWithIds$(this.path);
   }
+
+  public Get(id: string): Observable<Child> {
+    return this.firestoreService.doc$(this.getPath(id));
+  }
+
   public async Delete(id: string): Promise<boolean> {
     try {
-      await this.childrenCollection.doc(id).delete();
+      await this.firestoreService.delete(this.getPath(id));
       return true;
     } catch (e) {
       this.snackbarService.showError('There was an issue deleting the child', 'Dismiss');
     }
   }
-  public async Add(childInfo: Child): Promise<boolean> {
+
+  public Add(childInfo: Child): Promise<boolean> {
     const id = this.db.createId();
     childInfo.id = id;
-    return await this.addToCollection(childInfo, 'There was an issue saving the kid\'s information', 'Dismiss');
+    return this.addToCollection(childInfo, 'There was an issue saving the child', 'Dismiss');
   }
 
-  public async Update(childInfo: Child): Promise<boolean> {
-    return await this.addToCollection(childInfo, 'There was an issue updating the child', 'Dismiss');
+  public Update(childInfo: Child): Promise<boolean> {
+    return this.addToCollection(childInfo, 'There was an issue updating the child', 'Dismiss');
   }
 
   private async addToCollection(childInfo: Child, messageOnError: string, actionOnError: string): Promise<boolean> {
     try {
-      await this.childrenCollection.doc(childInfo.id).set(childInfo);
+      await this.firestoreService.set(this.getPath(childInfo.id), childInfo);
       return true;
     } catch (e) {
       console.error(e);
@@ -72,21 +57,7 @@ export class ChildrenService implements CrudService<Child, string>{
     }
   }
 
-  private pipeDateList(list: Child[], index: number): Child[] {
-    list.map(c => {
-      return this.pipeDate(c);
-    });
-    return list;
-  }
-
-  private pipeDate(child: Child): Child {
-    if (!child || !child.dob) {
-      return child;
-    }
-    const timestamp = child.dob as firestore.Timestamp;
-    child.dob = null;
-    const newDate = timestamp.toDate();
-    child.dob = newDate;
-    return child;
+  private getPath(id: string) {
+    return `${this.path}/${id}`;
   }
 }

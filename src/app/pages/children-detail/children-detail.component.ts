@@ -21,7 +21,7 @@ export class ChildrenDetailComponent implements OnInit {
     dob: new FormControl('', [Validators.required])
   });
   public submitButtonText: string;
-  private childId: string;
+  private child: Child;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,13 +33,16 @@ export class ChildrenDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.childrenService.Get(id)
-        .subscribe(data => this.childForm.setValue({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          dob: moment(data.dob)
-        }));
+        .subscribe(data => {
+          this.childForm.setValue({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dob: moment(data.dob)
+          });
+          this.child = data;
+        }
+        );
       this.submitButtonText = 'Save Child';
-      this.childId = id;
     } else {
       this.submitButtonText = 'Add Child';
     }
@@ -52,14 +55,14 @@ export class ChildrenDetailComponent implements OnInit {
     }
     const dobVal: moment.Moment = this.childForm.get('dob').value;
     const child: Child = {
+      ...this.child,
       firstName: this.childForm.get('firstName').value,
       lastName: this.childForm.get('lastName').value,
-      dob: dobVal.toDate(),
-      id: this.childId
+      dob: dobVal.toDate()
     };
-    const saved = await this.childId
-      ? this.childrenService.Update(child)
-      : this.childrenService.Add(child);
+    const saved = this.child
+      ? await this.childrenService.Update(child)
+      : await this.childrenService.Add(child);
     if (saved) {
       this.location.back();
     }

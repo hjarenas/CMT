@@ -27,6 +27,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { ChildrenComponent } from './pages/children/children.component';
 import { ChildrenDetailComponent } from './pages/children-detail/children-detail.component';
 import { ConfirmActionComponent } from './shared/components/confirm-action/confirm-action.component';
+import { ParentDetailComponent } from './pages/parent-detail/parent-detail.component';
+import { DocReferencePipePipe } from './pipes/doc-reference-pipe.pipe';
+import { FirestoreService } from './services/firestore.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,9 @@ import { ConfirmActionComponent } from './shared/components/confirm-action/confi
     DashboardComponent,
     ChildrenComponent,
     ChildrenDetailComponent,
-    ConfirmActionComponent
+    ConfirmActionComponent,
+    ParentDetailComponent,
+    DocReferencePipePipe
   ],
   imports: [
     AppRoutingModule,
@@ -55,7 +60,7 @@ import { ConfirmActionComponent } from './shared/components/confirm-action/confi
     MatSnackBarModule,
     MatToolbarModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, FirestoreService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

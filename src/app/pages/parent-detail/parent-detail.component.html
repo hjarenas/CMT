@@ -1,0 +1,8 @@
+<p>parent-detail works!</p>
+<div *ngFor="let parent of parents">
+    <span>{{parent.lastName}},{{parent.firstName}}</span>
+    <div>
+        {{parent.createdAt | date}}
+    </div>
+    <div *ngIf="parent.id">{{parent.id}}</div>
+</div>
