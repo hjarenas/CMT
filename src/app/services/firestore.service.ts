@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestore, QueryFn } from '@angular/fire/firestore';
 import 'firebase/firestore';
 import { firestore } from 'firebase/app';
 import { Observable } from 'rxjs';
@@ -16,7 +16,7 @@ export class FirestoreService {
 
   constructor(private afs: AngularFirestore) { }
 
-  col<T>(ref: CollectionPredicate<T>, queryFn?): AngularFirestoreCollection<T> {
+  col<T>(ref: CollectionPredicate<T>, queryFn?: QueryFn): AngularFirestoreCollection<T> {
     return typeof ref === 'string' ? this.afs.collection(ref, queryFn) : ref;
   }
 
@@ -25,16 +25,13 @@ export class FirestoreService {
   }
 
   doc$<T extends object>(ref: DocPredicate<T>): Observable<T> {
-    return this.doc(ref).snapshotChanges().pipe(map(doc => {
-      return this.pipeDates(doc.payload.data() as T);
-    }));
+    return this.doc(ref).snapshotChanges().pipe(map(doc => doc.payload.data() as T));
   }
 
   col$<T extends object>(ref: CollectionPredicate<T>, queryFn?): Observable<T[]> {
     return this.col(ref, queryFn).snapshotChanges().pipe(map(col => {
       return col.map(a => {
-        let obj = a.payload.doc.data() as T;
-        obj = this.pipeDates(obj);
+        const obj = a.payload.doc.data() as T;
         return obj;
       }) as T[];
     }));
@@ -43,7 +40,7 @@ export class FirestoreService {
   colWithIds$<T extends object>(ref: CollectionPredicate<T>, queryFn?): Observable<T[]> {
     return this.col(ref, queryFn).snapshotChanges().pipe(map(col => {
       return col.map(a => {
-        const data = this.pipeDates(a.payload.doc.data() as T);
+        const data = a.payload.doc.data() as T;
         const id = a.payload.doc.id;
         return { id, ...data };
       }) as T[];
@@ -65,19 +62,11 @@ export class FirestoreService {
     return this.doc(ref).delete();
   }
 
-  private get timestamp() {
-    return firestore.FieldValue.serverTimestamp();
+  createId(): string {
+    return this.afs.createId();
   }
 
-  private pipeDates<T extends object>(obj: T): T {
-    let newObj = obj; // tslint:disable-line
-    const keys = Object.keys(obj);
-    keys.map(key => {
-      const val = Reflect.get(newObj, key);
-      if (val instanceof firestore.Timestamp) {
-        Reflect.set(newObj, key, val.toDate());
-      }
-    });
-    return newObj;
+  private get timestamp() {
+    return firestore.FieldValue.serverTimestamp();
   }
 }

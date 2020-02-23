@@ -1,0 +1,20 @@
+<div>
+    <h1>Search Parent</h1>
+    <div fxLayout>
+        <div fxFlex="80">
+            <mat-form-field>
+                <mat-label>First Name</mat-label>
+                <input matInput #searchBox (input)="search(searchBox.value)" />
+            </mat-form-field>
+        </div>
+        <button fxFlex="20" mat-button>Search</button>
+    </div>
+    <div *ngFor="let parent of parentsFound | async">
+        <div fxLayout fxLayoutGap="4px">
+            <div>{{parent.firstName}}</div>
+            <div>{{parent.lastName}}</div>
+            <div fxFlex></div>
+            <button mat-button color="accent">Select</button>
+        </div>
+    </div>
+</div>

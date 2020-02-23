@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import 'firebase/firestore';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Child } from 'src/app/models/child';
 import { SnackbarService } from './snackbar.service';
 import { CrudService } from './interfaces/crud-service';
 import { FirestoreService } from './firestore.service';
+import { IDbChild, DbChild } from './db-models/db-child';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +14,30 @@ export class ChildrenService implements CrudService<Child, string> {
   private readonly path = 'children';
   constructor(
     private firestoreService: FirestoreService,
-    private db: AngularFirestore,
     private snackbarService: SnackbarService
   ) {
   }
 
   public List(): Observable<Child[]> {
-    return this.firestoreService.colWithIds$(this.path);
+    return this.firestoreService.colWithIds$<IDbChild>(this.path)
+      .pipe(
+        map(col => col.map(c => {
+          const uiChild = new DbChild();
+          const val = uiChild.toUiModel(c);
+          return val;
+        }))
+      );
   }
 
   public Get(id: string): Observable<Child> {
-    return this.firestoreService.doc$(this.getPath(id));
+    return this.firestoreService.doc$<IDbChild>(this.getPath(id))
+      .pipe(
+        map(c => {
+          const uiChild = new DbChild();
+          const val = uiChild.toUiModel(c);
+          return val;
+        })
+      );
   }
 
   public async Delete(id: string): Promise<boolean> {
@@ -37,7 +50,7 @@ export class ChildrenService implements CrudService<Child, string> {
   }
 
   public Add(childInfo: Child): Promise<boolean> {
-    const id = this.db.createId();
+    const id = this.firestoreService.createId();
     childInfo.id = id;
     return this.addToCollection(childInfo, 'There was an issue saving the child', 'Dismiss');
   }
@@ -48,7 +61,8 @@ export class ChildrenService implements CrudService<Child, string> {
 
   private async addToCollection(childInfo: Child, messageOnError: string, actionOnError: string): Promise<boolean> {
     try {
-      await this.firestoreService.set(this.getPath(childInfo.id), childInfo);
+      const dbChild = new DbChild().fromUiModel(childInfo);
+      await this.firestoreService.set(this.getPath(childInfo.id), dbChild);
       return true;
     } catch (e) {
       console.error(e);

@@ -5,7 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch localhost",
+            "name": "Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Launch Firefox",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
@@ -13,7 +20,7 @@
             "webRoot": "${workspaceFolder}"
         },
         {
-            "name": "Attach",
+            "name": "Attach to firefox",
             "type": "firefox",
             "request": "attach"
         },

@@ -1,28 +1,44 @@
-<form [formGroup]="childForm" (ngSubmit)="saveChild()">
-    <div>
-        <mat-form-field appearance="outline">
-            <mat-label>First Name</mat-label>
-            <input matInput type="text" formControlName="firstName" required />
-            <mat-error *ngIf="childForm.get('firstName').invalid">There is an issue with the first name</mat-error>
-        </mat-form-field>
-    </div>
-    <div>
-        <mat-form-field appearance="outline">
-            <mat-label>Last Name</mat-label>
-            <input matInput type="text" formControlName="lastName" required />
-            <mat-error *ngIf="childForm.get('lastName').invalid">There is an issue with the last name</mat-error>
-        </mat-form-field>
-    </div>
-    <div>
-        <mat-form-field>
-            <mat-label>Date of Birth</mat-label>
-            <input matInput [matDatepicker]="myDatepicker" formControlName="dob" required>
-            <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-            <mat-datepicker #myDatepicker></mat-datepicker>
-            <mat-error *ngIf="childForm.get('dob').invalid">There is an issue with the date of birth</mat-error>
-        </mat-form-field>
-    </div>
-    <div>
-        <button mat-button type="submit">{{submitButtonText}}</button>
-    </div>
-</form>
+<mat-card>
+        <mat-card-title>{{child ? 'Update Child': 'Add Child'}}</mat-card-title>
+        <form [formGroup]="childForm" (ngSubmit)="saveChild()">
+            <mat-card-content>
+                <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
+                    <mat-form-field>
+                        <mat-label>First Name</mat-label>
+                        <input matInput type="text" formControlName="firstName" required />
+                        <mat-error *ngIf="childForm.get('firstName').invalid">There is an issue with the first name
+                        </mat-error>
+                    </mat-form-field>
+                    <div ></div>
+                    <mat-form-field >
+                        <mat-label>Last Name</mat-label>
+                        <input matInput type="text" formControlName="lastName" required />
+                        <mat-error *ngIf="childForm.get('lastName').invalid">There is an issue with the last name
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                        <mat-label>Date of Birth</mat-label>
+                        <input matInput [matDatepicker]="myDatepicker" formControlName="dob" required>
+                        <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                        <mat-datepicker #myDatepicker></mat-datepicker>
+                        <mat-error *ngIf="childForm.get('dob').invalid">There is an issue with the date of birth
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <mat-card>
+                    <mat-card-title>Parents</mat-card-title>
+                    <mat-card-content>
+
+                    </mat-card-content>
+                    <mat-card-actions align="end">
+                        <button mat-mini-fab type="button" (click)="clickAddParent()"><mat-icon>add</mat-icon></button>
+                    </mat-card-actions>
+                </mat-card>
+            </mat-card-content>
+            <mat-card-actions>
+                <div>
+                    <button mat-button type="submit">{{submitButtonText}}</button>
+                </div>
+            </mat-card-actions>
+        </form>
+    </mat-card>

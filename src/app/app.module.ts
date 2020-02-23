@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,6 +31,7 @@ import { ConfirmActionComponent } from './shared/components/confirm-action/confi
 import { ParentDetailComponent } from './pages/parent-detail/parent-detail.component';
 import { DocReferencePipePipe } from './pipes/doc-reference-pipe.pipe';
 import { FirestoreService } from './services/firestore.service';
+import { SearchParentComponent } from './dialogs/search-parent/search-parent.component';
 
 @NgModule({
   declarations: [
@@ -40,13 +42,15 @@ import { FirestoreService } from './services/firestore.service';
     ChildrenDetailComponent,
     ConfirmActionComponent,
     ParentDetailComponent,
-    DocReferencePipePipe
+    DocReferencePipePipe,
+    SearchParentComponent
   ],
   imports: [
     AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    FormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     FlexLayoutModule,
     MatButtonModule,
@@ -54,6 +58,7 @@ import { FirestoreService } from './services/firestore.service';
     MatDatepickerModule,
     MatDialogModule,
     MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
     MatMomentDateModule,

@@ -1,8 +1,7 @@
-import { firestore } from 'firebase';
 import { DatabaseObject } from './database-object';
-import { CollectionPointer } from './collection-pointer';
+import { Child } from './child';
 export interface Parent extends DatabaseObject {
-    childIds: firestore.CollectionReference<CollectionPointer>;
+    childIds: string;
     firstName: string;
     lastName: string;
 }

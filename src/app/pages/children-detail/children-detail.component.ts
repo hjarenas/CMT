@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Child } from 'src/app/models/child';
 import { ChildrenService } from 'src/app/services/children.service';
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { SnackbarService } from '../../services/snackbar.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SearchParentComponent } from '../../dialogs/search-parent/search-parent.component';
+import { Parent } from '../../models/parent';
 
 @Component({
   selector: 'app-children-detail',
@@ -18,13 +19,17 @@ export class ChildrenDetailComponent implements OnInit {
   public childForm = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    dob: new FormControl('', [Validators.required])
+    dob: new FormControl('', [Validators.required]),
+    // parents: new FormArray([
+    //   new FormControl('', [Validators.required, Validators.minLength(2)])
+    // ])
   });
   public submitButtonText: string;
-  private child: Child;
+  public child: Child;
 
   constructor(
     private route: ActivatedRoute,
+    public dialog: MatDialog,
     private childrenService: ChildrenService,
     private location: Location,
     private snackbarService: SnackbarService) { }
@@ -48,6 +53,19 @@ export class ChildrenDetailComponent implements OnInit {
     }
   }
 
+  public async clickAddParent() {
+    const dialogRef = this.dialog.open(SearchParentComponent, {
+      width: '600px',
+      height: '800px',
+      minWidth: '40%',
+      maxWidth: '100%',
+      minHeight: '60%',
+      maxHeight: '100%'
+    });
+    dialogRef.afterClosed().subscribe((result: Parent) => {
+      console.log('found this parent' + result);
+    });
+  }
   public async saveChild(): Promise<void> {
     if (this.childForm.invalid) {
       this.snackbarService.showError('The data is not valid', 'Dismiss');
@@ -58,7 +76,8 @@ export class ChildrenDetailComponent implements OnInit {
       ...this.child,
       firstName: this.childForm.get('firstName').value,
       lastName: this.childForm.get('lastName').value,
-      dob: dobVal.toDate()
+      dob: dobVal.toDate(),
+      parents: []
     };
     const saved = this.child
       ? await this.childrenService.Update(child)
