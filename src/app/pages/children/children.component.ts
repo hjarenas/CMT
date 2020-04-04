@@ -3,7 +3,6 @@ import { ChildrenService } from 'src/app/services/children.service';
 import { Observable } from 'rxjs';
 import { Child } from 'src/app/models/child';
 import * as moment from 'moment';
-import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmActionComponent, ConfirmActionModel } from '../../shared/components/confirm-action/confirm-action.component';
 
@@ -16,7 +15,6 @@ export class ChildrenComponent implements OnInit {
 
   public children$: Observable<Child[]>;
   constructor(
-    private router: Router,
     private childrenService: ChildrenService,
     private dialog: MatDialog
   ) { }
