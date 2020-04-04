@@ -1,6 +1,4 @@
 import { of } from 'rxjs';
-import { AuthPipe } from '@angular/fire/auth-guard/auth-guard';
-import { map } from 'rxjs/operators';
 
 const authState: any = {
     displayName: null,
